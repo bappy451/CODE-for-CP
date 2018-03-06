@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define MAX 20000000
+#define N 51000000
+unsigned int prime[N / 64];
+#define gP(n) (prime[n>>6]&(1<<((n>>1)&31)))
+#define rP(n) (prime[n>>6]&=~(1<<((n>>1)&31)))
+void sieve()
+{
+    memset( prime, -1, sizeof( prime ) );
+
+    unsigned int i;
+    unsigned int sqrtN = ( unsigned int )sqrt( ( double )N ) + 1;
+    for( i = 3; i < sqrtN; i += 2 ) if( gP( i ) )
+    {
+        unsigned int i2 = i + i;
+        for( unsigned int j = i * i; j < N; j += i2 ) rP( j );
+    }
+}
+
+bool checkPrime (int x) {
+    if(x == 1) return false;
+    if(x == 2) return true;
+    return (x&1)&&gP(x);
+}
+
+map<int,int> mymap;
+
+int main()
+{
+    int l,u=1,s;
+    sieve();
+    for(int i=0; i<MAX; i++)
+        if(checkPrime(i) && checkPrime(i+2))
+        {
+            mymap.insert ( pair<int,int>(i,i+2) );
+        }
+    while(cin>>s)
+    {
+        map<int,int>::iterator it=mymap.begin();
+        for(int i=1; i<s; i++) ++it;
+        cout<<"(" << it->first << ", " << it->second<<")" << '\n';
+    }
+    return 0;
+}
